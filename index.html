@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transportation Dashboard</title>
+  <style>
+    /* ====== CSS STYLES ====== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #1f2937;
+      color: #fff;
+      padding: 20px;
+      flex-shrink: 0;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #cbd5e1;
+      padding: 10px 0;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .main {
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .topbar {
+      background-color: #fff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dashboard-title {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      flex: 1 1 200px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      color: #374151;
+    }
+
+    .card p {
+      font-size: 2em;
+      color: #1d4ed8;
+      font-weight: bold;
+    }
+
+    .schedule {
+      margin-top: 30px;
+    }
+
+    .schedule h3 {
+      margin-bottom: 15px;
+      color: #374151;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #f3f4f6;
+      color: #111827;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== SIDEBAR ====== -->
+  <div class="sidebar">
+    <h2>🚍 TransitSys</h2>
+    <a href="#">Home</a>
+    <a href="#">Vehicles</a>
+    <a href="#">Routes</a>
+    <a href="#">Schedules</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+  </div>
+
+  <!-- ====== MAIN CONTENT ====== -->
+  <div class="main">
+    <div class="topbar">
+      <div class="dashboard-title">Transportation Dashboard</div>
+      <div id="datetime"></div>
+    </div>
+
+    <!-- ====== DASHBOARD CARDS ====== -->
+    <div class="cards">
+      <div class="card">
+        <h3>Total Vehicles</h3>
+        <p id="vehicleCount">--</p>
+      </div>
+      <div class="card">
+        <h3>Active Trips</h3>
+        <p id="activeTrips">--</p>
+      </div>
+      <div class="card">
+        <h3>Delayed Trips</h3>
+        <p id="delayedTrips">--</p>
+      </div>
+      <div class="card">
+        <h3>Avg Speed (km/h)</h3>
+        <p id="avgSpeed">--</p>
+      </div>
+    </div>
+
+    <!-- ====== SCHEDULE TABLE ====== -->
+    <div class="schedule">
+      <h3>Today's Transport Schedule</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="scheduleTable">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== JS SCRIPT ====== -->
+  <script>
+    // Simulated data
+    const stats = {
+      vehicleCount: 120,
+      activeTrips: 78,
+      delayedTrips: 5,
+      avgSpeed: 48
+    };
+
+    const scheduleData = [
+      { route: "Route A1", departure: "08:00", arrival: "09:30", status: "On Time" },
+      { route: "Route B3", departure: "09:15", arrival: "10:45", status: "Delayed" },
+      { route: "Route C2", departure: "10:00", arrival: "11:30", status: "On Time" },
+      { route: "Route D4", departure: "11:45", arrival: "13:15", status: "Cancelled" },
+    ];
+
+    // Populate metrics
+    document.getElementById("vehicleCount").textContent = stats.vehicleCount;
+    document.getElementById("activeTrips").textContent = stats.activeTrips;
+    document.getElementById("delayedTrips").textContent = stats.delayedTrips;
+    document.getElementById("avgSpeed").textContent = stats.avgSpeed;
+
+    // Populate schedule
+    const table = document.getElementById("scheduleTable");
+    scheduleData.forEach(item => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.route}</td>
+        <td>${item.departure}</td>
+        <td>${item.arrival}</td>
+        <td>${item.status}</td>
+      `;
+      table.appendChild(row);
+    });
+
+    // Real-time date/time
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById("datetime").textContent = now.toLocaleString();
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+</body>
+</html>
